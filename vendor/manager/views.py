@@ -1,12 +1,17 @@
 from rest_framework import generics
-from .serializers import VendorSerializer
-from .models import Vendor
+from rest_framework.response import Response
+from django.db.models import Avg, F
+from .models import Vendor,PurchaseOrder, HistoricalPerformance
+from .serializers import VendorSerializer, HistoricalPerformanceSerializer
 
-class VendorCreateAPIView(generics.ListCreateAPIView):
+class VendorListCreateView(generics.ListCreateAPIView):
     queryset = Vendor.objects.all()
     serializer_class = VendorSerializer
 
-class VendorRetrieveUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
+class VendorDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Vendor.objects.all()
     serializer_class = VendorSerializer
 
+class VendorPerformanceView(generics.RetrieveAPIView):
+    queryset = HistoricalPerformance.objects.all()
+    serializer_class = HistoricalPerformanceSerializer
