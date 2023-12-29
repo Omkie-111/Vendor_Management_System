@@ -1,7 +1,5 @@
 from rest_framework import generics
-from rest_framework.response import Response
-from django.db.models import Avg, F
-from .models import Vendor,PurchaseOrder, HistoricalPerformance
+from .models import Vendor, HistoricalPerformance
 from .serializers import VendorSerializer, HistoricalPerformanceSerializer
 
 class VendorListCreateView(generics.ListCreateAPIView):
