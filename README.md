@@ -129,13 +129,14 @@ The important files and directories in the repository are as follows:
 - `POST`: Create a new vendor.
 
 **Request Body (POST):**
-```json
+```
 {
   "name": "Vendor ABC",
   "contact_details": "Contact info",
   "address": "Vendor's address",
   "vendor_code": "VENDOR-123"
 }
+```
 
 ### 2. Retrieve, Update, and Delete Vendor Details
 
@@ -168,7 +169,7 @@ The important files and directories in the repository are as follows:
 - `POST`: Create a new purchase order.
 
 **Request Body (POST):**
-```json
+```
 {
   "po_number": "PO-123",
   "vendor": 1,
@@ -181,6 +182,7 @@ The important files and directories in the repository are as follows:
   "issue_date": "2023-01-01T12:00:00Z",
   "acknowledgment_date": null
 }
+```
 
 ### 5. Retrieve, Update, and Delete Purchase Order
 
@@ -209,5 +211,6 @@ The important files and directories in the repository are as follows:
 
 - **Real-time Updates:**
   - Use of Django signals to trigger metric updates in real-time when related PO data is modified.
+
 
 
