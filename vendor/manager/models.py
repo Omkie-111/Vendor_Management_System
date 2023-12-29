@@ -16,16 +16,22 @@ class Vendor(models.Model):
         return self.name
 
     def completed_on_time_delivery_rate(self):
-        completed_POs = self.purchaseorder_set.filter(status="completed", delivery_date__lte=timezone.now())
-        total_comp_POs = completed_POs.count()
+        """
+        Calculate and update on-time delivery rate for completed purchase orders.
+        """
+        completed_pos = self.purchaseorder_set.filter(status="completed", delivery_date__lte=timezone.now())
+        total_comp_pos = completed_pos.count()
 
-        if total_comp_POs > 0:
-            on_time_delivery_rate = (total_comp_POs / float(self.purchaseorder_set.filter(status="completed").count())) * 100
+        if total_comp_pos > 0:
+            on_time_delivery_rate = (total_comp_pos / float(self.purchaseorder_set.filter(status="completed").count())) * 100
             self.on_time_delivery_rate = round(on_time_delivery_rate, 2)
         else:
             self.on_time_delivery_rate = 0
 
     def calculate_average_response_time(self):
+        """
+        Calculate and update average response time for acknowledged purchase orders.
+        """
         acknowledged_pos = self.purchaseorder_set.filter(status='acknowledged', acknowledgment_date__isnull=False)
 
         if acknowledged_pos.exists():
@@ -36,6 +42,9 @@ class Vendor(models.Model):
             self.average_response_time = 0
 
     def calculate_quality_rating_avg(self):
+        """
+        Calculate and update average quality rating based on completed purchase orders.
+        """
         quality_rating_all = self.purchaseorder_set.filter(status="completed", quality_rating__isnull=False)
         if quality_rating_all.exists():
             quality_rating_avg = quality_rating_all.aggregate(Avg('quality_rating'))["quality_rating__avg"]
@@ -44,6 +53,9 @@ class Vendor(models.Model):
             self.quality_rating_avg = 0
 
     def calculate_fulfillment_rate(self):
+        """
+        Calculate and update fulfillment rate based on all purchase orders.
+        """
         all_pos = self.purchaseorder_set.all()
         total_pos = all_pos.count()
 
