@@ -8,7 +8,7 @@ This Vendor Management System is built using Django and Django REST Framework. I
 - [Features](#features)
 - [Data Models](#data-models)
 - [Backend Logic](#backend-logic)
-- [API Endpoint Implementation](#api-endpoint-implementation)
+- [Vendor Management System API Implementation](#vendor-management-system-api-implementation)
 - [Technical Considerations](#technical-considerations)
 
 ## File Structure
@@ -116,13 +116,91 @@ The important files and directories in the repository are as follows:
             self.fulfillment_rate = 0
 ```
 
-## API Endpoint Implementation
+## Vendor Management System API Implementation
 
-- **Vendor Performance Endpoint (`GET /api/vendors/{vendor_id}/performance`):**
-  - Retrieves the calculated performance metrics for a specific vendor.
+### 1. List and Create Vendors
 
-- **Update Acknowledgment Endpoint (`POST /api/purchase_orders/{po_id}/acknowledge`):**
-  - Updates acknowledgment_date and triggers the recalculation of average_response_time.
+**Endpoint:** `/vendor/`
+
+**Method:** `GET` and `POST`
+
+**Description:**  
+- `GET`: Retrieve a list of all vendors.
+- `POST`: Create a new vendor.
+
+**Request Body (POST):**
+```json
+{
+  "name": "Vendor ABC",
+  "contact_details": "Contact info",
+  "address": "Vendor's address",
+  "vendor_code": "VENDOR-123"
+}
+
+### 2. Retrieve, Update, and Delete Vendor Details
+
+**Endpoint:** `/vendor/{id}/`
+
+**Method:** `GET`, `POST` and 'DELETE'
+
+**Description:**  
+- `GET`: Retrieve a list of all vendors.
+- `POST`: Update a vendor details.
+- 'DELETE' : Delete a vendor.
+
+### 3. Retrieve Vendor Performance Metrics
+
+**Endpoint:** `/vendor/{id}/performance/`
+
+**Method:** `GET`
+
+**Description:**  
+- `GET`: Retrieves the calculated performance metrics for a specific vendor.
+
+### 4. List and Create Purchase Orders
+
+**Endpoint:** `/purchase/`
+
+**Method:** `GET` and `POST`
+
+**Description:**  
+- `GET`: Retrieve a list of all purchase orders.
+- `POST`: Create a new purchase order.
+
+**Request Body (POST):**
+```json
+{
+  "po_number": "PO-123",
+  "vendor": 1,
+  "order_date": "2023-01-01T12:00:00Z",
+  "delivery_date": "2023-01-10T12:00:00Z",
+  "items": [{"item_name": "Product A", "quantity": 10}],
+  "quantity": 10,
+  "status": "pending",
+  "quality_rating": null,
+  "issue_date": "2023-01-01T12:00:00Z",
+  "acknowledgment_date": null
+}
+
+### 5. Retrieve, Update, and Delete Purchase Order
+
+**Endpoint:** `/purchase/{po_id}/`
+
+**Method:** `GET`, `POST` and 'DELETE'
+
+**Description:**  
+- `GET`: Retrieve a list of all purchase orders.
+- `POST`: Update a purchase order.
+- 'DELETE' : Delete a purchase order.
+
+### 6. Acknowledge Purchase Order
+
+**Endpoint:** `/purchase/{po_id}/acknowledge/`
+
+**Method:** `POST`
+
+**Description:**  
+- `POST`: Acknowledge a purchase order, updating the acknowledgment date.
 
 ## Technical Considerations
 
