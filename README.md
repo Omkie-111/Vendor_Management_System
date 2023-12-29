@@ -56,18 +56,65 @@ The important files and directories in the repository are as follows:
 - **On-Time Delivery Rate:**
   - Calculated each time a PO status changes to 'completed'.
   - Logic: Count the number of completed POs delivered on or before delivery_date and divide by the total number of completed POs for that vendor.
+ 
+```
+  def completed_on_time_delivery_rate(self):
+        completed_POs = self.purchaseorder_set.filter(status="completed", delivery_date__lte=timezone.now())
+        total_comp_POs = completed_POs.count()
+
+        if total_comp_POs > 0:
+            on_time_delivery_rate = (total_comp_POs / float(self.purchaseorder_set.filter(status="completed").count())) * 100
+            self.on_time_delivery_rate = round(on_time_delivery_rate, 2)
+        else:
+            self.on_time_delivery_rate = 0
+```
 
 - **Quality Rating Average:**
   - Updated upon the completion of each PO where a quality_rating is provided.
   - Logic: Calculate the average of all quality_rating values for completed POs of the vendor.
+ 
+```
+  def calculate_quality_rating_avg(self):
+        quality_rating_all = self.purchaseorder_set.filter(status="completed", quality_rating__isnull=False)
+        if quality_rating_all.exists():
+            quality_rating_avg = quality_rating_all.aggregate(Avg('quality_rating'))["quality_rating__avg"]
+            self.quality_rating_avg = round(quality_rating_avg, 2) if quality_rating_avg is not None else 0
+        else:
+            self.quality_rating_avg = 0
+```
 
 - **Average Response Time:**
   - Calculated each time a PO is acknowledged by the vendor.
   - Logic: Compute the time difference between issue_date and acknowledgment_date for each PO, and then find the average of these times for all POs of the vendor.
+ 
+```
+  def calculate_average_response_time(self):
+        acknowledged_pos = self.purchaseorder_set.filter(status='acknowledged', acknowledgment_date__isnull=False)
+
+        if acknowledged_pos.exists():
+            response_times = [(po.acknowledgment_date - po.issue_date).total_seconds() for po in acknowledged_pos]
+            average_response_time = sum(response_times) / acknowledged_pos.count()
+            self.average_response_time = round(average_response_time / 60, 2)  
+        else:
+            self.average_response_time = 0
+```
 
 - **Fulfillment Rate:**
   - Calculated upon any change in PO status.
   - Logic: Divide the number of successfully fulfilled POs (status 'completed' without issues) by the total number of POs issued to the vendor.
+ 
+```
+  def calculate_fulfillment_rate(self):
+        all_pos = self.purchaseorder_set.all()
+        total_pos = all_pos.count()
+
+        if total_pos > 0:
+            successfully_fulfilled_pos = all_pos.filter(status='completed')
+            fulfillment_rate = (successfully_fulfilled_pos.count() / float(total_pos)) * 100
+            self.fulfillment_rate = round(fulfillment_rate, 2)
+        else:
+            self.fulfillment_rate = 0
+```
 
 ## API Endpoint Implementation
 
